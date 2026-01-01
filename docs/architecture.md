@@ -5,11 +5,11 @@ This document outlines the conceptual architecture of the AI‑powered cybersecu
 High-Level Workflow
 - A user interacts with the chatbot through a web or chat interface.
 - The chatbot receives the user’s question and processes it using a combination of:
-- Rule‑based logic for predictable, safety‑critical topics
-- AI‑assisted reasoning for contextual explanations
+  - Rule‑based logic for predictable, safety‑critical topics
+  - AI‑assisted reasoning for contextual explanations
 - The system applies governance and safety filters to ensure:
-- No harmful, misleading, or privacy‑violating responses
-- No personal data is stored or reused
+  - No harmful, misleading, or privacy‑violating responses
+  - No personal data is stored or reused
 - The chatbot returns a clear, educational, and safe cybersecurity awareness response.
 # Core Components
 - User Interface (UI): Web or chat-based front end
