@@ -51,5 +51,5 @@ function getBotResponse(message) {
         return "Protect your personal data by limiting what you share online and reviewing privacy settings regularly.";
     }
 
-    return "I'm here to help with cybersecurity awareness. Try asking about phishing, passwords, cloud security, data protection, or AI safety.";
+    return "I'm here to help with cybersecurity awareness and skill acquisition. Try asking about phishing, passwords, cloud security, data protection, or AI safety.";
 }
