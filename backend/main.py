@@ -24,7 +24,7 @@ class ChatRequest(BaseModel):
 def chat(request: ChatRequest):
     try:
         response = client.responses.create(
-            model=ASSISTANT_ID,
+            model="gpt-5.2-chat",
             input=request.message
         )
 
