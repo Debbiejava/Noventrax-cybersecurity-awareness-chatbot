@@ -3,10 +3,20 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
+from fastapi.middleware.cors import CORSMiddleware   # <-- ADD THIS
 
 load_dotenv()
 
 app = FastAPI()
+
+# ✅ ADD CORS MIDDLEWARE RIGHT AFTER app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],        # You can restrict this later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client = OpenAI(
     base_url=os.getenv("AZURE_OPENAI_ENDPOINT"),
