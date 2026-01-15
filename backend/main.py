@@ -9,7 +9,7 @@ load_dotenv()
 
 app = FastAPI()
 
-# ✅ ADD CORS MIDDLEWARE RIGHT AFTER app = FastAPI()
+# ADD CORS MIDDLEWARE RIGHT AFTER app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],        # You can restrict this later
@@ -23,26 +23,36 @@ client = OpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY")
 )
 
-ASSISTANT_ID = os.getenv("ASSISTANT_ID")
+# Conversation memory
 
+conversation_history = []
 
 class ChatRequest(BaseModel):
     message: str
 
-
 @app.post("/chat")
 def chat(request: ChatRequest):
     try:
-        response = client.responses.create(
-            model="gpt-5.2-chat",
-            input=request.message
+        # Add user message to memory
+        conversation_history.append({"role": "user", "content": request.message})
+
+        # Build full conversation text
+        full_input = "\n".join(
+            [f"{msg['role']}: {msg['content']}" for msg in conversation_history]
         )
 
-        return {
-            "reply": response.output_text
-        }
+        # Send full conversation to Azure
+        response = client.responses.create(
+            model="gpt-5.2-chat",
+            input=full_input
+        )
+
+        bot_reply = response.output_text
+
+        # Add bot reply to memory
+        conversation_history.append({"role": "assistant", "content": bot_reply})
+
+        return {"reply": bot_reply}
 
     except Exception as e:
-        return {
-            "error": str(e)
-        }
+        return {"error": str(e)}
