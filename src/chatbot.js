@@ -9,6 +9,11 @@ async function sendMessage() {
     addMessage(message, "user-message");
     inputField.value = "";
 
+    // Show typing indicator
+    const typingIndicator = document.getElementById("typing-indicator");
+    typingIndicator.style.display = "block";
+
+
     // Call your backend instead of using getBotResponse()
     try {
         const response = await fetch("http://127.0.0.1:8000/chat", {
@@ -21,19 +26,15 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // Show the model's reply
+        // Hide typing indicator
+        typingIndicator.style.display = "none";
+
         addMessage(data.reply || data.error, "bot-message");
 
     } catch (error) {
+        typingIndicator.style.display = "none";
         addMessage("Error connecting to backend.", "bot-message");
     }
 }
 
-function addMessage(text, className) {
-    const chatWindow = document.getElementById("chat-window");
-    const messageDiv = document.createElement("div");
-    messageDiv.className = className;
-    messageDiv.textContent = text;
-    chatWindow.appendChild(messageDiv);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
+
