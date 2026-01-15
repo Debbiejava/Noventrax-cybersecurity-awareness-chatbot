@@ -57,6 +57,19 @@ async function resetConversation() {
     } catch (error) {
         addMessage("Error resetting conversation.", "bot-message");
     }
+    async function resetConversation() {
+    const confirmReset = confirm("Are you sure you want to reset the conversation?");
+    if (!confirmReset) return;
+
+    try {
+        await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+
+        fadeOutMessages(); // trigger fade-out animation
+
+    } catch (error) {
+        addMessage("Error resetting conversation.", "bot-message");
+    }
+}
 }
 
 
