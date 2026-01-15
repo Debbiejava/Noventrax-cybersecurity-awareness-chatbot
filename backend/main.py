@@ -9,6 +9,8 @@ load_dotenv()
 
 app = FastAPI()
 
+MEMORY_LIMIT = 10
+
 # ADD CORS MIDDLEWARE RIGHT AFTER app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -35,13 +37,14 @@ def chat(request: ChatRequest):
     try:
         # Add user message to memory
         conversation_history.append({"role": "user", "content": request.message})
-
-        # Build full conversation text
+        
+        # Enforce memory limit
+        if len(conversation_history) > MEMORY_LIMIT:
+            conversation_history.pop(0)
+    # Build full conversation text
         full_input = "\n".join(
             [f"{msg['role']}: {msg['content']}" for msg in conversation_history]
         )
-
-        # Send full conversation to Azure
         response = client.responses.create(
             model="gpt-5.2-chat",
             input=full_input
@@ -49,10 +52,16 @@ def chat(request: ChatRequest):
 
         bot_reply = response.output_text
 
-        # Add bot reply to memory
+         # Add bot reply
         conversation_history.append({"role": "assistant", "content": bot_reply})
+
+        # Enforce memory limit again
+        if len(conversation_history) > MEMORY_LIMIT:
+            conversation_history.pop(0)
 
         return {"reply": bot_reply}
 
     except Exception as e:
         return {"error": str(e)}
+
+       
