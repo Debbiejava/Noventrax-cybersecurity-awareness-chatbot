@@ -64,4 +64,7 @@ def chat(request: ChatRequest):
     except Exception as e:
         return {"error": str(e)}
 
-       
+       @app.post("/reset")
+def reset():
+    conversation_history.clear()
+    return {"status": "conversation reset"}
