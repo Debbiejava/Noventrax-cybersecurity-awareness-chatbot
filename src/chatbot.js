@@ -1,4 +1,13 @@
 document.getElementById("send-btn").addEventListener("click", sendMessage);
+document.getElementById("reset-btn").addEventListener("click", resetConversation);
+document.getElementById("new-chat-btn").addEventListener("click", async () => {
+    const confirmNew = confirm("Start a new chat?");
+    if (!confirmNew) return;
+
+    await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+
+    fadeOutMessages();
+});
 
 async function sendMessage() {
     const inputField = document.getElementById("user-input");
@@ -9,6 +18,20 @@ async function sendMessage() {
     addMessage(message, "user-message");
     inputField.value = "";
 
+async function resetConversation() {
+    const confirmReset = confirm("Are you sure you want to reset the conversation?");
+    if (!confirmReset) return;
+
+    try {
+        await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+
+        fadeOutMessages(); // trigger fade-out animation
+
+    } catch (error) {
+        addMessage("Error resetting conversation.", "bot-message");
+    }
+}
+    
     // Show typing indicator
     const typingIndicator = document.getElementById("typing-indicator");
     typingIndicator.style.display = "block";
@@ -37,8 +60,6 @@ async function sendMessage() {
     }
 }
 
-document.getElementById("reset-btn").addEventListener("click", resetConversation);
-
 async function resetConversation() {
     try {
         const response = await fetch("http://127.0.0.1:8000/reset", {
@@ -57,18 +78,19 @@ async function resetConversation() {
     } catch (error) {
         addMessage("Error resetting conversation.", "bot-message");
     }
-    async function resetConversation() {
-    const confirmReset = confirm("Are you sure you want to reset the conversation?");
-    if (!confirmReset) return;
+    
+    function fadeOutMessages() {
+    const chatWindow = document.getElementById("chat-window");
+    const messages = chatWindow.children;
 
-    try {
-        await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
-
-        fadeOutMessages(); // trigger fade-out animation
-
-    } catch (error) {
-        addMessage("Error resetting conversation.", "bot-message");
+    for (let msg of messages) {
+        msg.classList.add("fade-out");
     }
+
+    setTimeout(() => {
+        chatWindow.innerHTML = "";
+        addMessage("Conversation reset.", "bot-message");
+    }, 600);
 }
 }
 
