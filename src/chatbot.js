@@ -37,4 +37,26 @@ async function sendMessage() {
     }
 }
 
+document.getElementById("reset-btn").addEventListener("click", resetConversation);
+
+async function resetConversation() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/reset", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        // Clear the chat window visually
+        const chatWindow = document.getElementById("chat-window");
+        chatWindow.innerHTML = "";
+
+        // Optional: show confirmation message
+        addMessage("Conversation reset.", "bot-message");
+
+    } catch (error) {
+        addMessage("Error resetting conversation.", "bot-message");
+    }
+}
+
 
