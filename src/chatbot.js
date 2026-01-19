@@ -1,13 +1,33 @@
 document.getElementById("send-btn").addEventListener("click", sendMessage);
 document.getElementById("reset-btn").addEventListener("click", resetConversation);
+document.getElementById("dashboard").style.display = "none";
 document.getElementById("new-chat-btn").addEventListener("click", async () => {
     const confirmNew = confirm("Start a new chat?");
     if (!confirmNew) return;
+document.querySelectorAll(".topic-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const topic = btn.dataset.topic;
+        sendMessageDirect(`start ${topic}`);
+    });
+});
+
 
     await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
     fadeOutMessages();
 });
 
+async function sendMessageDirect(message) {
+    addMessage("user", message);
+
+    const response = await fetch("http://127.0.0.1:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    addMessage("bot", data.reply);
+}
 
 async function sendMessage() {
     const inputField = document.getElementById("user-input");
