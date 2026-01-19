@@ -1,114 +1,227 @@
+/* GLOBAL THEME VARIABLES */
+:root {
+    --bg-color: #f4f6f9;
+    --text-color: #222;
+    --sidebar-bg: #1e1e1e;
+    --sidebar-text: #fff;
+    --sidebar-btn-bg: #3a3a3a;
+    --sidebar-btn-hover: #555;
+
+    --chat-bg: #ffffff;
+    --chat-border: #ddd;
+
+    --user-bubble-bg: #0078d4;
+    --user-bubble-text: #fff;
+
+    --bot-bubble-bg: #e9eef5;
+    --bot-bubble-text: #222;
+
+    --input-bg: #fff;
+    --input-border: #ccc;
+
+    --send-btn-bg: #0078d4;
+    --send-btn-hover: #005fa3;
+
+    --reset-btn-bg: #ff4d4d;
+    --reset-btn-hover: #e60000;
+}
+
+/* DARK MODE */
+.dark-mode {
+    --bg-color: #121212;
+    --text-color: #f5f5f5;
+    --sidebar-bg: #181818;
+    --sidebar-text: #fff;
+    --sidebar-btn-bg: #2a2a2a;
+    --sidebar-btn-hover: #3a3a3a;
+
+    --chat-bg: #1e1e1e;
+    --chat-border: #333;
+
+    --user-bubble-bg: #005fa3;
+    --user-bubble-text: #fff;
+
+    --bot-bubble-bg: #2a2a2a;
+    --bot-bubble-text: #f5f5f5;
+
+    --input-bg: #2a2a2a;
+    --input-border: #444;
+
+    --send-btn-bg: #005fa3;
+    --send-btn-hover: #004a82;
+
+    --reset-btn-bg: #cc0000;
+    --reset-btn-hover: #990000;
+}
+
+/* GLOBAL LAYOUT */
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
-}
-
-.chat-container {
-    width: 400px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-/* Sidebar */
-.sidebar {
-    width: 220px;
-    background-color: #1e1e1e;
-    color: white;
-    padding: 15px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
     height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
+    overflow: hidden;
 }
 
-#new-chat-btn {
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.sidebar-section {
+    margin-bottom: 30px;
+}
+
+.sidebar h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sidebar-btn,
+.topic-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #3a3a3a;
-    color: white;
+    padding: 12px;
+    background: var(--sidebar-btn-bg);
+    color: var(--sidebar-text);
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+    transition: background 0.2s ease;
 }
 
-#new-chat-btn:hover {
-    background-color: #555;
+.sidebar-btn:hover,
+.topic-btn:hover {
+    background: var(--sidebar-btn-hover);
 }
 
-#chat-history-list {
-    margin-top: 10px;
+/* CHAT CONTAINER */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    box-sizing: border-box;
 }
 
-.chat-window {
-    height: 350px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    padding: 10px;
+/* HEADER */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
-    border-radius: 5px;
-    background: #fafafa;
 }
 
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* CHAT WINDOW */
+.chat-window {
+    flex: 1;
+    background: var(--chat-bg);
+    border: 1px solid var(--chat-border);
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* DASHBOARD */
+.dashboard {
+    text-align: center;
+    margin-top: 80px;
+    color: var(--text-color);
+}
+
+/* CHAT BUBBLES */
+.user-message,
+.bot-message {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin: 8px 0;
+    line-height: 1.4;
+    animation: fadeIn 0.2s ease-in;
+}
+
+.user-message {
+    background: var(--user-bubble-bg);
+    color: var(--user-bubble-text);
+    margin-left: auto;
+    border-bottom-right-radius: 2px;
+}
+
+.bot-message {
+    background: var(--bot-bubble-bg);
+    color: var(--bot-bubble-text);
+    margin-right: auto;
+    border-bottom-left-radius: 2px;
+}
+
+/* TYPING INDICATOR */
+#typing-indicator {
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* INPUT AREA */
 .input-area {
     display: flex;
     gap: 10px;
+    margin-top: 15px;
 }
 
 #user-input {
     flex: 1;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-color);
 }
 
-#send-btn {
-    padding: 10px 15px;
-    background: #0078d4;
+.send-btn {
+    padding: 12px 18px;
+    background: var(--send-btn-bg);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-#send-btn:hover {
-    background: #005fa3;
+.send-btn:hover {
+    background: var(--send-btn-hover);
 }
 
-.user-message {
-    text-align: right;
-    margin: 5px 0;
-    color: #333;
-}
-
-.bot-message {
-    text-align: left;
-    margin: 5px 0;
-    color: #0078d4;
-}
-
-/* Reset Button */
-#reset-btn {
-    background-color: #ff4d4d;
+.reset-btn {
+    padding: 12px 18px;
+    background: var(--reset-btn-bg);
     color: white;
     border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-left: 10px;
 }
 
-#reset-btn:hover {
-    background-color: #e60000;
+.reset-btn:hover {
+    background: var(--reset-btn-hover);
 }
-/* Fade-out animation for clearing messages */
+
+/* ANIMATIONS */
 .fade-out {
     animation: fadeOut 0.6s forwards;
 }
@@ -118,30 +231,7 @@ body {
     to { opacity: 0; }
 }
 
-#topic-menu {
-    margin-top: 20px;
-    padding: 10px;
-    color: white;
-}
-
-.topic-btn {
-    width: 100%;
-    margin-bottom: 8px;
-    padding: 10px;
-    background-color: #2d2d2d;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    text-align: left;
-}
-
-.topic-btn:hover {
-    background-color: #444;
-}
-
-#dashboard {
-    text-align: center;
-    margin-top: 100px;
-    color: #555;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }
