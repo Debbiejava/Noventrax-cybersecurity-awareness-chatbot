@@ -2,6 +2,8 @@ document.getElementById("send-btn").addEventListener("click", sendMessage);
 document.getElementById("reset-btn").addEventListener("click", resetConversation);
 document.getElementById("new-chat-btn").addEventListener("click", async () => {
     const confirmNew = confirm("Start a new chat?");
+    const API_URL = "http://127.0.0.1:8000/chat";
+
     if (!confirmNew) return;
 
     await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
