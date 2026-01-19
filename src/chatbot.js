@@ -1,9 +1,41 @@
-document.getElementById("send-btn").addEventListener("click", sendMessage);
-document.getElementById("reset-btn").addEventListener("click", resetConversation);
-document.getElementById("dashboard").style.display = "none";
-document.getElementById("new-chat-btn").addEventListener("click", async () => {
+/* DOM ELEMENT REFERENCES */
+const sendBtn = document.getElementById("send-btn");
+const resetBtn = document.getElementById("reset-btn");
+const newChatBtn = document.getElementById("new-chat-btn");
+const inputField = document.getElementById("user-input");
+const chatWindow = document.getElementById("chat-window");
+const typingIndicator = document.getElementById("typing-indicator");
+const themeToggle = document.getElementById("theme-toggle");
+const dashboard = document.getElementById("dashboard");
+let chatMessages = [];
+
+
+/* EVENT LISTENERS */
+
+// Send button
+sendBtn.addEventListener("click", sendMessage);
+
+// Reset button
+resetBtn.addEventListener("click", resetConversation);
+
+// New chat button
+newChatBtn.addEventListener("click", async () => {
     const confirmNew = confirm("Start a new chat?");
     if (!confirmNew) return;
+
+    await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+    fadeOutMessages();
+});
+
+// Enter-to-send
+inputField.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+    }
+});
+
+// Topic buttons
 document.querySelectorAll(".topic-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         const topic = btn.dataset.topic;
@@ -11,33 +43,34 @@ document.querySelectorAll(".topic-btn").forEach(btn => {
     });
 });
 
+// Theme toggle
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
 
-    await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
-    fadeOutMessages();
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
 });
 
-async function sendMessageDirect(message) {
-    addMessage("user", message);
-
-    const response = await fetch("http://127.0.0.1:8000/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-    });
-
-    const data = await response.json();
-    addMessage("bot", data.reply);
+// Load saved theme
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️";
 }
 
+
+/* CHAT FUNCTIONS */
+
+// Send message normally
 async function sendMessage() {
-    const inputField = document.getElementById("user-input");
     const message = inputField.value.trim();
     if (message === "") return;
 
+    hideDashboard();
     addMessage("user", message);
     inputField.value = "";
 
-    const typingIndicator = document.getElementById("typing-indicator");
     typingIndicator.style.display = "block";
 
     try {
@@ -58,6 +91,35 @@ async function sendMessage() {
     }
 }
 
+// Send message directly (used for topic buttons)
+async function sendMessageDirect(message) {
+    hideDashboard();
+    addMessage("user", message);
+
+    const response = await fetch("http://127.0.0.1:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    addMessage("bot", data.reply);
+}
+
+// Add message to chat window
+function addMessage(sender, text) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = sender === "user" ? "user-message" : "bot-message";
+    messageDiv.textContent = text;
+
+    chatWindow.appendChild(messageDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    chatMessages.push({ role: sender, content: text });
+}
+
+
+/* RESET & UI EFFECTS */
 
 async function resetConversation() {
     const confirmReset = confirm("Are you sure you want to reset the conversation?");
@@ -71,9 +133,7 @@ async function resetConversation() {
     }
 }
 
-    
-    function fadeOutMessages() {
-    const chatWindow = document.getElementById("chat-window");
+function fadeOutMessages() {
     const messages = chatWindow.children;
 
     for (let msg of messages) {
@@ -82,21 +142,67 @@ async function resetConversation() {
 
     setTimeout(() => {
         chatWindow.innerHTML = "";
+        chatMessages = [];
         addMessage("bot", "Conversation reset.");
     }, 600);
 }
 
+function hideDashboard() {
+    dashboard.style.display = "none";
+}
 
-    function addMessage(sender, text) {
-    const chatWindow = document.getElementById("chat-window");
 
-    const messageDiv = document.createElement("div");
-    messageDiv.className = sender === "user" ? "user-message" : "bot-message";
-    messageDiv.textContent = text;
+/* CHAT HISTORY (LOCAL STORAGE) */
 
-    chatWindow.appendChild(messageDiv);
+function saveChatSession() {
+    const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+
+    history.push({
+        id: Date.now(),
+        title: "Chat " + new Date().toLocaleTimeString(),
+        messages: chatMessages
+    });
+
+    localStorage.setItem("chatHistory", JSON.stringify(history));
+}
+
+function loadHistory() {
+    const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    const list = document.getElementById("history-list");
+
+    list.innerHTML = "";
+
+    history.forEach(session => {
+        const li = document.createElement("li");
+        li.textContent = session.title;
+        li.dataset.id = session.id;
+
+        li.addEventListener("click", () => loadChatSession(session.id));
+
+        list.appendChild(li);
+    });
+}
+
+function loadChatSession(id) {
+    const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    const session = history.find(s => s.id == id);
+
+    if (!session) return;
+
+    chatMessages = session.messages;
+    renderChatMessages();
+}
+
+function renderChatMessages() {
+    chatWindow.innerHTML = "";
+
+    chatMessages.forEach(msg => {
+        addMessage(msg.role, msg.content);
+    });
+
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 
-
+/* INITIALIZATION */
+loadHistory();
