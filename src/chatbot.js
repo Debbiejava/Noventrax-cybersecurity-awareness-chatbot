@@ -94,6 +94,17 @@ async function resetConversation() {
         addMessage("Conversation reset.", "bot-message");
     }, 600);
 }
+
+    function addMessage(sender, text) {
+    const chatWindow = document.getElementById("chat-window");
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = sender === "user" ? "user-message" : "bot-message";
+    messageDiv.textContent = text;
+
+    chatWindow.appendChild(messageDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 }
 
 
