@@ -9,6 +9,13 @@ load_dotenv()
 
 app = FastAPI()
 
+# TODO: once deployed, replace "*" with your actual frontend URL(s)
+origins = [
+    "*",
+    # "https://your-frontend.azurestaticapps.net",
+    # "http://localhost:5173",
+]
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -64,6 +71,9 @@ MEMORY_LIMIT = 20
 class ChatRequest(BaseModel):
     message: str
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/chat")
 def chat(request: ChatRequest):
