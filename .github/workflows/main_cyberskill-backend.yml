@@ -63,7 +63,4 @@ jobs:
         with:
           app-name: 'cyberskill-backend'
           slot-name: 'Production'
-
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8C693457F3D84D3AA3C9C4087044A56B }}
-          package: .
-
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_774E017FF3C4498E83D91A7BAB382A1E }}
