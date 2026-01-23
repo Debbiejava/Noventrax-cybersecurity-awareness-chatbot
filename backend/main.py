@@ -134,7 +134,7 @@ def chat(request: ChatRequest):
 
     except Exception as e:
         return {"error": str(e)}
-
+# trigger rebuild for test
 
 @app.post("/reset")
 def reset():
