@@ -117,10 +117,10 @@ def chat(request: ChatRequest):
         # Add user message
         conversation_history.append({"role": "user", "content": request.message})
 
-        # Enforce memory limit
-        if len(conversation_history) > MEMORY_LIMIT:
-        # keep the system prompt at index 0
-        conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT-1):]
+        # Enforce memory limit (keep the system prompt at index 0)
+      if len(conversation_history) > MEMORY_LIMIT:
+      conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT - 1):]
+
 
 
         # Build conversation text
@@ -130,7 +130,10 @@ def chat(request: ChatRequest):
 
         # Azure OpenAI call
         response = client.responses.create(
-            model=os.getenv("AZURE_OPENAI_MODEL"),
+            model = os.getenv("AZURE_OPENAI_MODEL")
+if not model:
+    return {"error": "Missing AZURE_OPENAI_MODEL (set this to your Azure OpenAI deployment name)"}
+,
             input=full_input
         )
 
