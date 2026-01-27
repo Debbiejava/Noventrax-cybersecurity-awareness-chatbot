@@ -14,7 +14,11 @@ allow_origins=["*"]
 #allow_origins=[
   #"https://<your-static-app>.azurestaticapps.net",
   #"https://<your-custom-domain>"
+<<<<<<< HEAD
 
+=======
+#]
+>>>>>>> 3841f1fd759ed7c7c0126591c112fc5770dc2bc5
 
 # CORS
 app.add_middleware(
