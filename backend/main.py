@@ -26,10 +26,17 @@ app.add_middleware(
 )
 
 # Azure OpenAI client
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+
+if not AZURE_OPENAI_ENDPOINT or not AZURE_OPENAI_API_KEY:
+    raise RuntimeError("Missing AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_API_KEY in environment variables")
+
 client = OpenAI(
-    base_url=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY")
+    base_url=AZURE_OPENAI_ENDPOINT,
+    api_key=AZURE_OPENAI_API_KEY
 )
+
 
 # System prompt
 SYSTEM_PROMPT = """
