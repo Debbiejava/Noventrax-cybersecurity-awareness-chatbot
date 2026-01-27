@@ -10,10 +10,10 @@ load_dotenv()
 app = FastAPI()
 
 # TODO: once deployed, replace "*" with your actual frontend URL(s)
-origins = [
-    "*",
-    # "https://your-frontend.azurestaticapps.net",
-    # "http://localhost:5173",
+]
+allow_origins=[
+  "https://<your-static-app>.azurestaticapps.net",
+  "https://<your-custom-domain>"
 ]
 
 # CORS
@@ -112,7 +112,9 @@ def chat(request: ChatRequest):
 
         # Enforce memory limit
         if len(conversation_history) > MEMORY_LIMIT:
-            conversation_history.pop(0)
+        # keep the system prompt at index 0
+        conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT-1):]
+
 
         # Build conversation text
         full_input = "\n".join(
@@ -121,7 +123,7 @@ def chat(request: ChatRequest):
 
         # Azure OpenAI call
         response = client.responses.create(
-            model="gpt-5.2-chat",
+            model=os.getenv("AZURE_OPENAI_MODEL"),
             input=full_input
         )
 
