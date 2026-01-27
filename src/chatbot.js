@@ -1,4 +1,5 @@
 /* DOM ELEMENT REFERENCES */
+const API_BASE = window.API_BASE_URL || "";
 const sendBtn = document.getElementById("send-btn");
 const resetBtn = document.getElementById("reset-btn");
 const newChatBtn = document.getElementById("new-chat-btn");
@@ -23,7 +24,7 @@ newChatBtn.addEventListener("click", async () => {
     const confirmNew = confirm("Start a new chat?");
     if (!confirmNew) return;
 
-    await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+    await fetch(`${API_BASE}/reset`, { method: "POST" });
     fadeOutMessages();
 });
 
@@ -74,7 +75,7 @@ async function sendMessage() {
     typingIndicator.style.display = "block";
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/chat", {
+        const response = await fetch(`${API_BASE}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message })
@@ -96,7 +97,7 @@ async function sendMessageDirect(message) {
     hideDashboard();
     addMessage("user", message);
 
-    const response = await fetch("http://127.0.0.1:8000/chat", {
+    const response = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message })
@@ -126,7 +127,7 @@ async function resetConversation() {
     if (!confirmReset) return;
 
     try {
-        await fetch("http://127.0.0.1:8000/reset", { method: "POST" });
+        await fetch(`${API_BASE}/reset`, { method: "POST" });
         fadeOutMessages();
     } catch (error) {
         addMessage("bot", "Error resetting conversation.");
