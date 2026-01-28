@@ -10,23 +10,11 @@ load_dotenv()
 app = FastAPI()
 
 # TODO: once deployed, replace "*" with your actual frontend URL(s)
-allow_origins = ["*"]
 #allow_origins=
   #"https://<your-static-app>.azurestaticapps.net",
   #"https://<your-custom-domain>"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-#]
->>>>>>> 3841f1fd759ed7c7c0126591c112fc5770dc2bc5
-=======
-# ]
->>>>>>> 832ef396e067cec3355acf3bf0b3d3abf8826693
-=======
 
->>>>>>> f1d9b3807ba2e33d4898492eda1baa44e4a05b3f
 
 # CORS
 app.add_middleware(
@@ -129,10 +117,10 @@ def chat(request: ChatRequest):
         # Add user message
         conversation_history.append({"role": "user", "content": request.message})
 
-        # Enforce memory limit (keep the system prompt at index 0)
-      if len(conversation_history) > MEMORY_LIMIT:
-      conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT - 1):]
-
+        # Enforce memory limit
+        if len(conversation_history) > MEMORY_LIMIT:
+        # keep the system prompt at index 0
+        conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT-1):]
 
 
         # Build conversation text
@@ -142,10 +130,7 @@ def chat(request: ChatRequest):
 
         # Azure OpenAI call
         response = client.responses.create(
-            model = os.getenv("AZURE_OPENAI_MODEL")
-if not model:
-    return {"error": "Missing AZURE_OPENAI_MODEL (set this to your Azure OpenAI deployment name)"}
-,
+            model=os.getenv("AZURE_OPENAI_MODEL"),
             input=full_input
         )
 
