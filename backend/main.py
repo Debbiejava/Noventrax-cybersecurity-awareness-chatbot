@@ -11,9 +11,10 @@ app = FastAPI()
 
 # TODO: once deployed, replace "*" with your actual frontend URL(s)
 allow_origins = ["*"]
-#allow_origins=[
+#allow_origins=
   #"https://<your-static-app>.azurestaticapps.net",
   #"https://<your-custom-domain>"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -23,6 +24,9 @@ allow_origins = ["*"]
 =======
 # ]
 >>>>>>> 832ef396e067cec3355acf3bf0b3d3abf8826693
+=======
+
+>>>>>>> f1d9b3807ba2e33d4898492eda1baa44e4a05b3f
 
 # CORS
 app.add_middleware(
