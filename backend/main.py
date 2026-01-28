@@ -63,8 +63,9 @@ def get_client() -> OpenAI | None:
     Create Azure OpenAI client lazily so the app can boot even if env vars are missing.
     This keeps /health working.
     """
-    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT") or "").strip()
-    api_key = os.getenv("AZURE_OPENAI_API_KEY") or "").strip()
+    endpoint = (os.getenv("AZURE_OPENAI_ENDPOINT") or "").strip()
+    api_key = (os.getenv("AZURE_OPENAI_API_KEY") or "").strip()
+
     if not endpoint or not api_key:
         return None
     return OpenAI(base_url=endpoint, api_key=api_key)
