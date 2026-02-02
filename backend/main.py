@@ -10,11 +10,12 @@ load_dotenv()
 app = FastAPI()
 
 # TODO: once deployed, replace "*" with your actual frontend URL(s)
-allow_origins = ["*"]
-# allow_origins = [
-#     "https://<your-static-app>.azurestaticapps.net",
-#     "https://<your-custom-domain>",
-# ]
+allow_origins = [
+    "http://localhost:5500",   # VS Code Live Server common
+    "http://127.0.0.1:5500",
+    "https://ashy-plant-01c155a0f.2.azurestaticapps.net",
+   # "https://<your-custom-domain>",
+]
 
 # CORS
 app.add_middleware(
