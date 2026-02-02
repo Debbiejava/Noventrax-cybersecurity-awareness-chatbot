@@ -235,3 +235,68 @@ body {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ------------------------------
+   RESPONSIVE (Mobile/Tablet)
+-------------------------------- */
+@media (max-width: 900px) {
+  body {
+    flex-direction: column;   /* stack sidebar on top of chat */
+    height: auto;
+    overflow: auto;           /* allow scrolling */
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;         /* sidebar scrolls if long */
+    overflow-y: auto;
+  }
+
+  .chat-container {
+    padding: 12px;
+  }
+
+  .chat-window {
+    height: 55vh;             /* ensure chat window is visible */
+  }
+
+  .input-area {
+    flex-wrap: wrap;          /* buttons drop below input if needed */
+  }
+
+  #user-input {
+    flex: 1 1 100%;
+    font-size: 16px;          /* avoids iOS zoom */
+  }
+
+  .send-btn,
+  .reset-btn {
+    flex: 1 1 48%;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    max-height: 45vh;
+    padding: 12px;
+  }
+
+  .sidebar-btn,
+  .topic-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .chat-header h2 {
+    font-size: 16px;
+  }
+
+  .theme-toggle {
+    font-size: 18px;
+  }
+
+  .chat-window {
+    padding: 12px;
+  }
+}
