@@ -1,3 +1,7 @@
+console.log("chatbot.js loaded");
+
+
+
 /* DOM ELEMENT REFERENCES */
 const API_BASE = window.API_BASE_URL || "";
 const sendBtn = document.getElementById("send-btn");
@@ -39,6 +43,7 @@ inputField.addEventListener("keydown", function (e) {
 // Topic buttons
 document.querySelectorAll(".topic-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+        console.log("Topic clicked:", btn.dataset.topic);
         const topic = btn.dataset.topic;
         sendMessageDirect(`start ${topic}`);
     });
