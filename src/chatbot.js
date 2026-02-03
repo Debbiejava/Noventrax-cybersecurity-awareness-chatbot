@@ -1,4 +1,5 @@
 console.log("chatbot.js loaded");
+console.log("API_BASE_URL:", window.API_BASE_URL);
 
 
 
