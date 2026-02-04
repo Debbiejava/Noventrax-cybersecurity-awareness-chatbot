@@ -28,12 +28,12 @@ logger = logging.getLogger("noventrax")
 # CORS (tighten in production)
 # -----------------------------
 # For now keep "*" while you test; later replace with your Static Web App domain.
-allow_origins = ["*"]
+# allow_origins = ["*"]
 # Example later:
-# allow_origins = [
-#   "https://<your-static-app>.azurestaticapps.net",
+allow_origins = [
+   "https://ashy-plant-01c155a0f.2.azurestaticapps.net",
 #   "https://<your-custom-domain>"
-# ]
+ ]
 
 app.add_middleware(
     CORSMiddleware,
