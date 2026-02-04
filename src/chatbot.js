@@ -15,6 +15,10 @@ const themeToggle = document.getElementById("theme-toggle");
 const dashboard = document.getElementById("dashboard");
 let chatMessages = [];
 
+console.log("Send button:", sendBtn);
+console.log("Reset button:", resetBtn);
+console.log("Topic buttons:", document.querySelectorAll(".topic-btn").length);
+
 
 /* EVENT LISTENERS */
 
