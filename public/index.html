@@ -52,6 +52,23 @@
                 <p>Or type a question to start chatting.</p>
             </div>
 
+<button id="feedback-btn" class="feedback-button">Give Feedback</button>
+
+<div id="feedback-modal" class="feedback-modal" style="display:none;">
+    <div class="feedback-content">
+        <h3>Your Feedback</h3>
+        <label>Rating (1–5):</label>
+        <input id="feedback-rating" type="number" min="1" max="5">
+
+        <label>Comment:</label>
+        <textarea id="feedback-comment"></textarea>
+
+        <button id="submit-feedback">Submit</button>
+        <button id="close-feedback">Close</button>
+    </div>
+</div>
+
+
             <!-- Typing Indicator -->
             <div id="typing-indicator" class="bot-message" style="display:none;">
                 Hold on...
