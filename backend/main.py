@@ -1,20 +1,39 @@
 import os
 import time
+import logging
 from typing import Optional, List, Dict
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Load environment variables FIRST (local dev only; Azure uses env vars/secrets)
 load_dotenv()
 
+# -----------------------------
+# App + logging
+# -----------------------------
 app = FastAPI()
 
-# ---------- CORS ----------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+logger = logging.getLogger("noventrax")
+
+
+# -----------------------------
+# CORS (tighten in production)
+# -----------------------------
 # For now keep "*" while you test; later replace with your Static Web App domain.
 allow_origins = ["*"]
+# Example later:
+# allow_origins = [
+#   "https://<your-static-app>.azurestaticapps.net",
+#   "https://<your-custom-domain>"
+# ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,7 +43,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------- OpenAI client factory ----------
+
+# -----------------------------
+# Simple usage analytics middleware
+# Logs every request: path, status, duration (ms)
+# -----------------------------
+@app.middleware("http")
+async def request_metrics(request: Request, call_next):
+    start = time.time()
+    try:
+        response = await call_next(request)
+        return response
+    finally:
+        duration_ms = int((time.time() - start) * 1000)
+        # note: response may not exist if an exception occurred before call_next returns
+        status = getattr(locals().get("response", None), "status_code", 500)
+        logger.info(
+            "request path=%s method=%s status=%s duration_ms=%s",
+            request.url.path,
+            request.method,
+            status,
+            duration_ms,
+        )
+
+
+# -----------------------------
+# Azure OpenAI client helpers
+# -----------------------------
 def get_client() -> Optional[OpenAI]:
     endpoint = (os.getenv("AZURE_OPENAI_ENDPOINT") or "").strip()
     api_key = (os.getenv("AZURE_OPENAI_API_KEY") or "").strip()
@@ -37,7 +82,10 @@ def get_model_name() -> Optional[str]:
     model = (os.getenv("AZURE_OPENAI_MODEL") or "").strip()
     return model or None
 
-# ---------- System prompt ----------
+
+# -----------------------------
+# System prompt + memory
+# -----------------------------
 SYSTEM_PROMPT = """
 You are the Noventrax Cyberskills Assistant — a friendly, patient, and highly knowledgeable cybersecurity tutor.
 Your mission is to help beginners and intermediate learners understand cybersecurity concepts with clarity, confidence, and practical examples.
@@ -61,9 +109,18 @@ TOPICS = {
     "digital hygiene": "Teach passwords, safe browsing, scams, privacy, device security.",
 }
 
-# ---------- Feedback store (in-memory) ----------
+
+# -----------------------------
+# Feedback store (in-memory for now)
+# NOTE: in-memory will reset when container restarts.
+# Next step later: persist to App Insights, Table Storage, Cosmos DB, etc.
+# -----------------------------
 feedback_store: List[Dict[str, str]] = []
 
+
+# -----------------------------
+# Request models
+# -----------------------------
 class ChatRequest(BaseModel):
     message: str
 
@@ -72,6 +129,10 @@ class FeedbackRequest(BaseModel):
     comment: str
     page_url: Optional[str] = None
 
+
+# -----------------------------
+# Routes
+# -----------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -94,45 +155,51 @@ def feedback(req: FeedbackRequest):
     }
     feedback_store.append(item)
 
-    # Shows up in Azure Container Apps log stream
-    print(f"[FEEDBACK] rating={item['rating']} comment={item['comment']} page={item['page_url']}")
+    # Better than print() for Azure logs
+    logger.info("[FEEDBACK] rating=%s comment=%s page=%s", item["rating"], item["comment"], item["page_url"])
     return {"status": "received"}
+
 
 @app.post("/chat")
 def chat(request: ChatRequest):
     global conversation_history
 
-    msg = request.message.strip()
+    msg = (request.message or "").strip()
     lower_msg = msg.lower()
+
+    if not msg:
+        return {"reply": "Please type a message."}
 
     # ---- Feedback via chat command ----
     # Examples:
     #   "feedback: the answer was great"
     #   "rate: 5 - very helpful"
     if lower_msg.startswith("feedback:") or lower_msg.startswith("rate:"):
-        rating = None
+        rating: Optional[int] = None
         comment = msg
 
         if lower_msg.startswith("rate:"):
-            # Try to parse "rate: 5 - comment"
             tail = msg.split(":", 1)[1].strip()
             parts = tail.split("-", 1)
+
             try:
                 rating = int(parts[0].strip())
-            except:
+            except ValueError:
                 rating = None
+
             comment = parts[1].strip() if len(parts) > 1 else tail
 
         if lower_msg.startswith("feedback:"):
             comment = msg.split(":", 1)[1].strip()
 
-        feedback_store.append({
+        item = {
             "ts": str(int(time.time())),
             "rating": str(rating) if rating is not None else "",
             "comment": comment,
             "page_url": "",
-        })
-        print(f"[FEEDBACK(chat)] rating={rating} comment={comment}")
+        }
+        feedback_store.append(item)
+        logger.info("[FEEDBACK(chat)] rating=%s comment=%s", item["rating"], item["comment"])
         return {"reply": "✅ Thanks! Your feedback has been recorded."}
 
     # ---- Track switching ----
@@ -160,7 +227,7 @@ def chat(request: ChatRequest):
     # ---- Normal chat flow ----
     conversation_history.append({"role": "user", "content": msg})
 
-    # Enforce memory limit (keep system prompt at index 0)
+    # Enforce memory limit (keep the system prompt at index 0)
     if len(conversation_history) > MEMORY_LIMIT:
         conversation_history = [conversation_history[0]] + conversation_history[-(MEMORY_LIMIT - 1):]
 
@@ -181,10 +248,12 @@ def chat(request: ChatRequest):
         )
         bot_reply = response.output_text
     except Exception as e:
+        logger.exception("OpenAI request failed")
         return {"error": str(e)}
 
     conversation_history.append({"role": "assistant", "content": bot_reply})
     return {"reply": bot_reply}
+
 
 @app.post("/reset")
 def reset():
