@@ -23,6 +23,7 @@
         <!-- Learning Modules -->
         <div id="topic-menu" class="sidebar-section">
             <h3>Learning Modules</h3>
+            <button class="topic-btn" data-topic="AI">AI Fundamentals</button>
             <button class="topic-btn" data-topic="cybersecurity fundamentals">Cybersecurity Fundamentals</button>
             <button class="topic-btn" data-topic="network security">Network Security</button>
             <button class="topic-btn" data-topic="cloud security">Cloud Security</button>
@@ -45,29 +46,12 @@
         <!-- Chat Window -->
         <div id="chat-window" class="chat-window">
 
-            <!-- Dashboard (shown before first message) -->
+            <!-- Dashboard -->
             <div id="dashboard" class="dashboard">
                 <h2>Welcome to Noventrax Cyberskills Assistant</h2>
                 <p>Select a learning module on the left to begin.</p>
                 <p>Or type a question to start chatting.</p>
             </div>
-
-<button id="feedback-btn" class="feedback-button">Give Feedback</button>
-
-<div id="feedback-modal" class="feedback-modal" style="display:none;">
-    <div class="feedback-content">
-        <h3>Your Feedback</h3>
-        <label>Rating (1–5):</label>
-        <input id="feedback-rating" type="number" min="1" max="5">
-
-        <label>Comment:</label>
-        <textarea id="feedback-comment"></textarea>
-
-        <button id="submit-feedback">Submit</button>
-        <button id="close-feedback">Close</button>
-    </div>
-</div>
-
 
             <!-- Typing Indicator -->
             <div id="typing-indicator" class="bot-message" style="display:none;">
@@ -81,21 +65,37 @@
             <input type="text" id="user-input" placeholder="Learn with Noventrax.">
             <button id="send-btn" class="send-btn">Send</button>
             <button id="reset-btn" class="reset-btn">Reset</button>
+            <button id="feedback-btn" class="feedback-button">Feedback</button>
         </div>
 
     </div>
 
-    <!-- Set backend URL -->
-<script>
-  window.API_BASE_URL = "https://novdoc-container.salmoncliff-d8a0bdcc.eastus.azurecontainerapps.io";
-</script>
+    <!-- FEEDBACK MODAL -->
+    <div id="feedback-modal" class="feedback-modal" style="display:none;">
+        <div class="feedback-content">
+            <h3>Your Feedback</h3>
 
-<!-- Load safety JS -->
-<script src="/safety.js"></script>    
+            <label>Rating (1–5):</label>
+            <input id="feedback-rating" type="number" min="1" max="5">
 
-<!-- Load chatbot JS -->
-<script src="/chatbot.js"></script>
+            <label>Comment:</label>
+            <textarea id="feedback-comment"></textarea>
 
+            <button id="submit-feedback">Submit</button>
+            <button id="close-feedback">Close</button>
+        </div>
+    </div>
+
+    <!-- Backend URL -->
+    <script>
+      window.API_BASE_URL = "https://novdoc-container.salmoncliff-d8a0bdcc.eastus.azurecontainerapps.io";
+    </script>
+
+    <!-- Load safety JS -->
+    <script src="/safety.js"></script>
+
+    <!-- Load chatbot JS -->
+    <script src="/chatbot.js"></script>
 
 </body>
 </html>
