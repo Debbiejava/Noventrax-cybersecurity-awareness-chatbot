@@ -75,8 +75,37 @@ if (localStorage.getItem("theme") === "dark") {
 
 // Send message normally
 async function sendMessage() {
-    const message = inputField.value.trim();
-    if (message === "") return;
+    const raw = inputField.value;
+
+    // 1. Rate limiting
+    const rateCheck = window.Safety.canSendMessageNow();
+    if (!rateCheck.ok) {
+        addMessage("bot", "Please wait a few seconds before sending another message.");
+        return;
+    }
+
+    // 2. Validation
+    const validation = window.Safety.isValidMessage(raw);
+    if (!validation.ok) {
+        if (validation.reason === "empty") return;
+        if (validation.reason === "too_long") {
+            addMessage("bot", "Your message is too long. Please shorten it.");
+        }
+        return;
+    }
+
+    // 3. Unsafe content filter
+    if (window.Safety.containsUnsafeContent(raw)) {
+        addMessage(
+            "bot",
+            "For safety reasons, I can’t respond to that request. " +
+            "Try rephrasing it as a general cybersecurity awareness question."
+        );
+        return;
+    }
+
+    // 4. Sanitise before sending
+    const message = window.Safety.sanitizeInput(raw);
 
     hideDashboard();
     addMessage("user", message);
@@ -94,7 +123,8 @@ async function sendMessage() {
         const data = await response.json();
         typingIndicator.style.display = "none";
 
-        addMessage("bot", data.reply || data.error);
+        const reply = data.reply || data.error || "No response from backend.";
+        addMessage("bot", window.Safety.sanitizeOutput(reply));
 
     } catch (error) {
         typingIndicator.style.display = "none";
@@ -103,30 +133,42 @@ async function sendMessage() {
 }
 
 // Send message directly (used for topic buttons)
-async function sendMessageDirect(message) {
+async function sendMessageDirect(rawMessage) {
+    // Topic prompts are system‑generated, but we still sanitise defensively
+    const message = window.Safety.sanitizeInput(rawMessage);
+
     hideDashboard();
     addMessage("user", message);
 
-    const response = await fetch(`${API_BASE}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-    });
+    try {
+        const response = await fetch(`${API_BASE}/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
 
-    const data = await response.json();
-    addMessage("bot", data.reply);
+        const data = await response.json();
+        const reply = data.reply || data.error || "No response from backend.";
+        addMessage("bot", window.Safety.sanitizeOutput(reply));
+    } catch (error) {
+        addMessage("bot", "Error connecting to backend.");
+    }
 }
+
 
 // Add message to chat window
 function addMessage(sender, text) {
     const messageDiv = document.createElement("div");
     messageDiv.className = sender === "user" ? "user-message" : "bot-message";
-    messageDiv.textContent = text;
+
+    // Ensure no HTML injection
+    const safeText = window.Safety ? window.Safety.sanitizeOutput(text) : text;
+    messageDiv.textContent = safeText;
 
     chatWindow.appendChild(messageDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    chatMessages.push({ role: sender, content: text });
+    chatMessages.push({ role: sender, content: safeText });
 }
 
 
