@@ -256,6 +256,50 @@ function renderChatMessages() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+// FEEDBACK UI
+const feedbackBtn = document.getElementById("feedback-btn");
+const feedbackModal = document.getElementById("feedback-modal");
+const submitFeedback = document.getElementById("submit-feedback");
+const closeFeedback = document.getElementById("close-feedback");
+
+feedbackBtn.addEventListener("click", () => {
+    feedbackModal.style.display = "flex";
+});
+
+closeFeedback.addEventListener("click", () => {
+    feedbackModal.style.display = "none";
+});
+
+// Submit feedback
+submitFeedback.addEventListener("click", async () => {
+    const rating = document.getElementById("feedback-rating").value;
+    const comment = document.getElementById("feedback-comment").value;
+
+    if (!comment.trim()) {
+        alert("Please enter a comment.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/feedback`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                rating: rating ? Number(rating) : null,
+                comment,
+                page_url: window.location.href
+            })
+        });
+
+        const data = await response.json();
+        alert("Thank you! Your feedback has been submitted.");
+        feedbackModal.style.display = "none";
+
+    } catch (error) {
+        alert("Error submitting feedback.");
+    }
+});
+
 
 /* INITIALIZATION */
 loadHistory();
