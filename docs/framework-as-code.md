@@ -160,6 +160,7 @@ Examples:
 # 5. Control Map (Policy → Enforcement → Evidence)
 
 ```mermaid
+
 flowchart LR
 
   Policy["Policies<br>(rbac.yaml, retention.yaml)"]
@@ -174,8 +175,8 @@ flowchart LR
   CI --> Policy
   App --> Monitor
   Monitor --> Data
-
 ```
+
 # 6. Minimum Enforceable Controls (MVP Baseline)
 # 6.1 Authorization Baseline
 
