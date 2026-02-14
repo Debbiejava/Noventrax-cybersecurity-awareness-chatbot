@@ -41,6 +41,7 @@ stateDiagram-v2
 
   Draft --> Archived: Archive (optional)
   Archived --> [*]
+```
 
 # 3. State Machine 2 - Enrolment lifecycle
 
