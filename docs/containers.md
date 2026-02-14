@@ -87,7 +87,7 @@ flowchart LR
 
   %% System boundary
   subgraph SYS[Noventrax VLE/LMS]
-    FE[Web Frontend\n(Azure Static Web Apps)]
+    FE["Web Frontend<br>(Azure Static Web Apps)"]
     API[Backend API\n(FastAPI on Azure Container Apps/App Service)]
     DB[(Relational Database\n(Azure PostgreSQL))]
     BLOB[(Object Storage\n(Azure Blob Storage))]
