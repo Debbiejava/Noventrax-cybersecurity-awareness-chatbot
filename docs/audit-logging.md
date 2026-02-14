@@ -60,25 +60,25 @@ Characteristics:
 # 3. Logging Flow Diagram (GitHub-safe Mermaid)
 
 ```mermaid
+
 flowchart LR
 
-  User[User<br>(Student/Instructor/Admin)]
-  UI["Web Frontend<br>(SWA)"]
-  API["Backend API<br>(FastAPI)"]
+  User["User (Student / Instructor / Admin)"]
+  UI["Web Frontend (SWA)"]
+  API["Backend API (FastAPI)"]
 
-  DB[("PostgreSQL<br>(Audit Logs + LMS Data)")]
-  Obs[("App Insights / Azure Monitor<br>(Operational Logs/Metrics/Traces)")]
-  SIEM[("SIEM / Sentinel<br>(Optional)")]
-  Alerts["Alerts<br>(Email/Teams/Pager)"]
+  DB[("PostgreSQL - Audit Logs + LMS Data")]
+  Obs[("App Insights / Azure Monitor - Logs/Metrics")]
+  SIEM[("SIEM / Sentinel (Optional)")]
+  Alerts["Alerts (Email / Teams / Pager)"]
 
   User --> UI
-  UI -->|"HTTPS API calls"| API
+  UI -->|HTTPS API calls| API
 
-  %% Audit logging (governance)
-  API -->|"Write audit events<br>(append-only)"| DB
+  API -->|Write audit events (append-only)| DB
+  API -->|Logs, metrics, traces| Obs
 
-  %% Operational logging (observability)
-  API -->|"Logs, metrics, traces"| Obs
-  Obs -->|"Forward security signals (optional)"| SIEM
-  Obs -->|"Trigger alerts"| Alerts
+  Obs -->|Forward security signals (optional)| SIEM
+  Obs -->|Trigger alerts| Alerts
+
 ```
