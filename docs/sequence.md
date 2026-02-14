@@ -50,6 +50,7 @@ sequenceDiagram
   IdP-->>API: Token valid + claims
   API-->>UI: Authorized response
   UI-->>User: User is signed in
+```
 
 
 # Sequence diagram 2 - student enrolment in a course
@@ -77,6 +78,7 @@ sequenceDiagram
   API->>Obs: Log event (enrolment_created)
   API-->>UI: 201 Created + enrolment details
   UI-->>Student: Access granted to course
+```
 
 # Sequence diagram 3 - Lesson Access + Progress Update
 ```mermaid
@@ -111,6 +113,7 @@ sequenceDiagram
   API->>DB: Upsert lesson_progress(completed_at)
   DB-->>API: Updated
   API-->>UI: 200 OK
+```
 
 
 # Sequence diagram 4 - Assignment Submission
@@ -138,6 +141,7 @@ sequenceDiagram
   API->>Obs: Log event (submission_created)
   API-->>UI: 201 Created + submission ID
   UI-->>Student: Submission confirmation
+```
 
 # Sequence Diagram 5 - Instructor Grading + Audit logging
 ```mermaid
@@ -166,6 +170,7 @@ sequenceDiagram
   Notify-->>API: Accepted
   API-->>UI: 200 OK
   UI-->>Instructor: Grade published
+```
 
 # Sequence diagram 6 - AI Tutor chat (per-user session isolation)
 ```mermaid
@@ -194,6 +199,7 @@ sequenceDiagram
   API->>Obs: Log AI latency + request metrics
   API-->>UI: Reply text
   UI-->>Student: Render AI response
+```
 
 ## Failure & Degradation Patterns (Applies to All Flows)
 
