@@ -104,7 +104,6 @@ The backend must be stateless to support scaling. No in-memory shared user sessi
 - **API interface spec (optional):** `docs/api-spec.md`
 
 ---
-
 ## 7. Architecture at a Glance (Quick View)
 
 ```mermaid
