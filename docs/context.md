@@ -76,7 +76,7 @@ flowchart LR
 
   %% System Boundary
   subgraph SYS[Noventrax VLE/LMS]
-    VLELMS[AI-Enhanced Learning Platform\n(VLE + LMS)]
+    VLELMS["AI-Enhanced Learning Platform<br>(VLE + LMS)"]
   end
 
   %% External Systems
