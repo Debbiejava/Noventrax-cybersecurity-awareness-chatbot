@@ -62,26 +62,24 @@ Characteristics:
 ```mermaid
 flowchart LR
 
-  User["User (Student / Instructor / Admin)"]
-  UI["Web Frontend (SWA)"]
-  API["Backend API (FastAPI)"]
+  User["User - Student / Instructor / Admin"]
+  UI["Web Frontend - SWA"]
+  API["Backend API - FastAPI"]
 
-  DB[("PostgreSQL - Audit Logs + LMS Data")]
-  Obs[("App Insights / Azure Monitor - Logs/Metrics")]
-  SIEM[("SIEM / Sentinel (Optional)")]
-  Alerts["Alerts (Email / Teams / Pager)"]
+  DB[("PostgreSQL - Audit Logs and LMS Data")]
+  Obs[("App Insights - Logs and Metrics")]
+  SIEM[("SIEM - Optional")]
+  Alerts["Alerts - Email / Teams / Pager"]
 
   User --> UI
   UI -->|HTTPS API calls| API
 
-  API -->|Write audit events (append-only)| DB
-  API -->|Logs, metrics, traces| Obs
+  API -->|Write audit events| DB
+  API -->|Logs metrics traces| Obs
 
-  Obs -->|Forward security signals (optional)| SIEM
+  Obs -->|Forward security signals| SIEM
   Obs -->|Trigger alerts| Alerts
-
 ```
-
 
 
 
