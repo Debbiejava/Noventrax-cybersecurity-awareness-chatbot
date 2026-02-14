@@ -2,7 +2,6 @@
 ## Security Architecture & Threat Model
 
 ---
-
 ## 1. Purpose
 
 This document defines the security architecture of the Noventrax VLE/LMS and outlines:
