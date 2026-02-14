@@ -85,32 +85,26 @@ This level does **not** show detailed internal components/classes (that appears 
 ```mermaid
 flowchart LR
 
-  %% System boundary
-  subgraph SYS[Noventrax VLE/LMS]
+  subgraph SYS["Noventrax VLE/LMS"]
     FE["Web Frontend<br>(Azure Static Web Apps)"]
-    API[Backend API\n(FastAPI on Azure Container Apps/App Service)]
-    DB[(Relational Database\n(Azure PostgreSQL))]
-    BLOB[(Object Storage\n(Azure Blob Storage))]
-    REDIS[(Session/Cache Store\n(Optional: Azure Redis Cache))]
+    API["Backend API<br>(FastAPI on Azure Container Apps/App Service)"]
+    DB[("Relational Database<br>(Azure PostgreSQL)")]
+    BLOB[("Object Storage<br>(Azure Blob Storage)")]
+    REDIS[("Session/Cache Store<br>(Optional: Azure Redis Cache)")]
   end
 
-  %% External systems
-  IdP[(Identity Provider\n(Entra ID / JWT Auth))]
-  OpenAI[(Azure OpenAI)]
-  Obs[(Observability\n(App Insights / Azure Monitor))]
-  Notify[(Email / Notification Service)]
+  IdP[("Identity Provider<br>(Entra ID / JWT Auth)")]
+  OpenAI[("Azure OpenAI")]
+  Obs[("Observability<br>(App Insights / Azure Monitor)")]
+  Notify[("Email / Notification Service")]
 
-  %% User access (implicit at this level)
-  %% Browser --> FE (handled by hosting)
+  FE -->|"HTTPS: REST/JSON"| API
+  API -->|"SQL over TLS"| DB
+  API -->|"Blob SDK over TLS"| BLOB
+  API -->|"Cache/session ops"| REDIS
 
-  %% Internal communications
-  FE -->|HTTPS: REST/JSON| API
-  API -->|SQL over TLS| DB
-  API -->|Blob SDK over TLS\n(upload/download)| BLOB
-  API -->|Cache/session ops| REDIS
+  API -->|"Authenticate / validate tokens"| IdP
+  API -->|"Prompts / AI responses"| OpenAI
+  API -->|"Logs, metrics, traces"| Obs
+  API -->|"Send notifications"| Notify
 
-  %% External integrations
-  API -->|Authenticate /\nvalidate tokens| IdP
-  API -->|Prompts /\nAI responses| OpenAI
-  API -->|Logs, metrics,\ntraces| Obs
-  API -->|Send notifications| Notify
