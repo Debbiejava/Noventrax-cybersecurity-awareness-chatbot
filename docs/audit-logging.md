@@ -60,7 +60,6 @@ Characteristics:
 # 3. Logging Flow Diagram (GitHub-safe Mermaid)
 
 ```mermaid
-
 flowchart LR
 
   User["User (Student / Instructor / Admin)"]
@@ -82,3 +81,7 @@ flowchart LR
   Obs -->|Trigger alerts| Alerts
 
 ```
+
+
+
+
