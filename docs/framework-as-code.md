@@ -254,7 +254,9 @@ This supports governance, assessment, and operational transparency.
 
 - Automated quarterly access reviews (reports + attestations)
 ---
- 
-**Document Version:** v1.0
-**Document Type:** Framework as Code (Governance Automation)
+
+**Document Version:** v1.0  
+**Document Type:** Framework as Code (Governance Automation)  
 **Focus:** Enforceable controls, evidence generation, operational consistency
+ 
+
