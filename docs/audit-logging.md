@@ -81,5 +81,4 @@ flowchart LR
   API -->|"Logs, metrics, traces"| Obs
   Obs -->|"Forward security signals (optional)"| SIEM
   Obs -->|"Trigger alerts"| Alerts
-
 ```
