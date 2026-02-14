@@ -253,7 +253,7 @@ This supports governance, assessment, and operational transparency.
 - Formal DPIA template completion and sign-off workflow
 
 - Automated quarterly access reviews (reports + attestations)
-
+---
  
 **Document Version:** v1.0
 **Document Type:** Framework as Code (Governance Automation)
